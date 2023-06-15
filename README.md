@@ -1,3 +1,9 @@
+## Development
+
+This project uses EditorConfig to standardize text editor configurations. Visit https://editorconfig.org for details.
+
+This project uses ESLint to detect suspicious code in Javascript files. Visit https://eslint.org for details.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
