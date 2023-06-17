@@ -11,10 +11,14 @@ npm start
 
 The React app is served by the development server that runs on URL [http://localhost:3000](http://localhost:3000)
 
-There are <number_of_routes> routes:
+There are 4 routes:
 
-- http://localhost:3000/ - homepage
-  TBD
+- http://localhost:3000/ - Home page
+- http://localhost:3000/about - About page
+- http://localhost:3000/articles - List of articles page
+- http://localhost:3000/articles/:articleId - Single article page
+
+The React app uses React Router routing library for client-side routing and navigation.
 
 ## Available Scripts
 
