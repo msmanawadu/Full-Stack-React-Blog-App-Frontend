@@ -4,6 +4,7 @@ import axios from "axios";
 import articles from "./article-content";
 import CommentsList from "../components/CommentsList";
 import AddCommentForm from "../components/AddCommentForm";
+import useUser from "../hooks/useUser";
 import NotFoundPage from "./NotFoundPage";
 
 function ArticlePage() {
@@ -12,6 +13,10 @@ function ArticlePage() {
 
   // useParams hook from react-router: To retrieve the URL string value represented by the route parameter: articleId
   const { articleId } = useParams();
+
+  // Get currently logged-in user
+  // eslint-disable-next-line no-unused-vars
+  const { user, isLoading } = useUser();
 
   // Fetching the article document from the REST API
   useEffect(() => {
@@ -41,19 +46,27 @@ function ArticlePage() {
     <>
       <h1>{article.title}</h1>
       <div className="upvotes-section">
-        <button onClick={addUpvote} type="button">
-          Upvote
-        </button>
+        {user ? (
+          <button onClick={addUpvote} type="button">
+            Upvote
+          </button>
+        ) : (
+          <button type="button">Log In to Upvote</button>
+        )}
         <p>This article has {articleInfo.upvotes} upvote(s)</p>
       </div>
       {article.content.map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
       ))}
 
-      <AddCommentForm
-        articleName={articleId}
-        onArticleUpdated={(updatedArticle) => setArticleInfo(updatedArticle)}
-      />
+      {user ? (
+        <AddCommentForm
+          articleName={articleId}
+          onArticleUpdated={(updatedArticle) => setArticleInfo(updatedArticle)}
+        />
+      ) : (
+        <button type="button">Log In to Add a Comment</button>
+      )}
 
       <CommentsList comments={articleInfo.comments} />
     </>
