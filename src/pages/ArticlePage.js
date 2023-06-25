@@ -9,30 +9,45 @@ import NotFoundPage from "./NotFoundPage";
 
 function ArticlePage() {
   // For the loaded article document state
-  const [articleInfo, setArticleInfo] = useState({ upvotes: 0, comments: [] });
+  const [articleInfo, setArticleInfo] = useState({ upvotes: 0, comments: [], canUpvote: false });
+  const { canUpvote } = articleInfo;
 
   // useParams hook from react-router: To retrieve the URL string value represented by the route parameter: articleId
   const { articleId } = useParams();
 
   // Get currently logged-in user
-  // eslint-disable-next-line no-unused-vars
   const { user, isLoading } = useUser();
 
   // Fetching the article document from the REST API
   useEffect(() => {
     const loadArticleInfo = async () => {
-      const response = await axios.get(`/api/articles/${articleId}`);
+      // Integrate auth token to the request headers
+      const token = user && (await user.getIdToken());
+      const headers = token ? { authtoken: token } : {};
+
+      const response = await axios.get(`/api/articles/${articleId}`, {
+        headers,
+      });
       const newArticleInfo = response.data;
       setArticleInfo(newArticleInfo);
     };
-    loadArticleInfo(); // Work around to avoid an async function to be the first argument
-  }, []);
+
+    if (isLoading) {
+      loadArticleInfo(); // Work around to avoid an async function to be the first argument
+    }
+  }, [isLoading, user]);
 
   const article = articles.find((articleItem) => articleItem.name === articleId);
 
   // Updating the upvote count of the article on upvote button click by one
   const addUpvote = async () => {
-    const response = await axios.put(`/api/articles/${articleId}/upvote`);
+    // Integrate auth token to the request headers
+    const token = user && (await user.getIdToken());
+    const headers = token ? { authtoken: token } : {};
+
+    const response = await axios.put(`/api/articles/${articleId}/upvote`, null, {
+      headers,
+    });
     const updatedArticle = response.data;
     setArticleInfo(updatedArticle);
   };
@@ -48,7 +63,7 @@ function ArticlePage() {
       <div className="upvotes-section">
         {user ? (
           <button onClick={addUpvote} type="button">
-            Upvote
+            {canUpvote ? "Upvote" : "Already Upvoted"}
           </button>
         ) : (
           <button type="button">Log In to Upvote</button>
