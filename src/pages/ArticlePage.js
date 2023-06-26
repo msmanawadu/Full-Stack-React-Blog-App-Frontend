@@ -32,7 +32,7 @@ function ArticlePage() {
       setArticleInfo(newArticleInfo);
     };
 
-    if (isLoading) {
+    if (!isLoading) {
       loadArticleInfo(); // Work around to avoid an async function to be the first argument
     }
   }, [isLoading, user]);
